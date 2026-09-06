@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(to right, #d8f3dc, #b7e4c7);
+    margin: 0;
+}
+
+header {
+    background: #1b4332;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+#caseCard {
+    width: 60%;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px gray;
+    text-align: center;
+}
+
+.option {
+    display: block;
+    margin: 10px auto;
+    padding: 12px;
+    width: 60%;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: #95d5b2;
+}
+
+.option:hover {
+    background: #52b788;
+    color: white;
+}
+
+.correct { background: green !important; color: white; }
+.wrong { background: red !important; color: white; }
+
+#progressBar {
+    width: 60%;
+    margin: auto;
+    background: #ccc;
+    height: 20px;
+}
+
+#progress {
+    height: 20px;
+    width: 0%;
+    background: green;
+}
+
+button {
+    margin: 10px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Handbook */
+#handbook {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 20%;
+    width: 60%;
+    height: 70%;
+    background: white;
+    overflow-y: scroll;
+    padding: 20px;
+    border-radius: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🌿 Virtual Herbal Garden</h1>
+</header>
+
+<div id="caseCard">
+<h3 id="caseText"></h3>
+<div id="options"></div>
+
+<button onclick="generateCase()">Next</button>
+<button onclick="openHandbook()">📖 Handbook</button>
+<button onclick="startVoice()">🎤 Voice Suggest</button>
+</div>
+
+<div id="progressBar">
+<div id="progress"></div>
+</div>
+
+<div id="handbook">
+<button onclick="closeHandbook()">❌ Close</button>
+<h2>📖 Handbook</h2>
+<div id="handbookContent"></div>
+</div>
+
+<script>
+
+// 🌿 PLANTS DATA
+const plantData = [
+{name:"Tulsi",system:"Ayurveda",use:"cold and cough"},
+{name:"Ashwagandha",system:"Ayurveda",use:"stress and weakness"},
+{name:"Neem",system:"Ayurveda",use:"skin problems"},
+{name:"Amla",system:"Ayurveda",use:"vitamin deficiency"},
+{name:"Aloe vera",system:"Ayurveda",use:"skin and digestion"},
+
+{name:"Senna",system:"Unani",use:"constipation"},
+{name:"Asrol",system:"Unani",use:"high blood pressure"},
+{name:"Banafsha",system:"Unani",use:"cold and throat infection"},
+{name:"Gulab",system:"Unani",use:"body cooling"},
+{name:"Zanjabeel",system:"Unani",use:"digestion issues"},
+
+{name:"Thoothuvalai",system:"Siddha",use:"respiratory problems"},
+{name:"Nilavembu",system:"Siddha",use:"fever"},
+{name:"Adathoda",system:"Siddha",use:"cough"},
+{name:"Karisalankanni",system:"Siddha",use:"liver disorders"},
+
+{name:"Spinach",system:"Naturopathy",use:"iron deficiency"},
+{name:"Carrot",system:"Naturopathy",use:"eye health"},
+{name:"Turmeric",system:"Naturopathy",use:"inflammation"},
+{name:"Cucumber",system:"Naturopathy",use:"hydration"},
+
+{name:"Arnica montana",system:"Homeopathy",use:"pain and injury"},
+{name:"Belladonna",system:"Homeopathy",use:"high fever"},
+{name:"Nux vomica",system:"Homeopathy",use:"digestion problems"},
+{name:"Calendula",system:"Homeopathy",use:"wound healing"}
+];
+
+const plants = plantData.map(p=>p.name);
+
+// Better questions
+const cases = plantData.map(p=>({
+q:"Patient has problem related to " + p.use,
+ans:p.name
+}));
+
+let currentAnswer;
+let progress=0;
+
+// 🎲 CASE GENERATION
+function generateCase(){
+let c=cases[Math.floor(Math.random()*cases.length)];
+currentAnswer=c.ans;
+document.getElementById("caseText").innerText="🩺 "+c.q;
+
+let options=[c.ans];
+while(options.length<4){
+let r=plants[Math.floor(Math.random()*plants.length)];
+if(!options.includes(r)) options.push(r);
+}
+
+options.sort(()=>Math.random()-0.5);
+
+let div=document.getElementById("options");
+div.innerHTML="";
+
+options.forEach(o=>{
+let b=document.createElement("button");
+b.className="option";
+b.innerText=o;
+b.onclick=()=>check(b,o);
+div.appendChild(b);
+});
+}
+
+// ✅ CHECK ANSWER
+function check(btn,sel){
+let btns=document.querySelectorAll(".option");
+btns.forEach(b=>b.disabled=true);
+
+if(sel===currentAnswer){
+btn.classList.add("correct");
+progress+=5;
+update();
+}else{
+btn.classList.add("wrong");
+btns.forEach(b=>{
+if(b.innerText===currentAnswer) b.classList.add("correct");
+});
+}
+}
+
+// 📊 UPDATE PROGRESS
+function update(){
+document.getElementById("progress").style.width=progress+"%";
+}
+
+// 📖 OPEN HANDBOOK
+function openHandbook() {
+
+let systems = {};
+
+plantData.forEach(p => {
+if(!systems[p.system]) systems[p.system] = [];
+systems[p.system].push(p);
+});
+
+let content = "";
+
+for(let sys in systems) {
+content += `<h3>${sys}</h3>`;
+systems[sys].forEach(p => {
+content += `<p>🌿 <b>${p.name}</b> → ${p.use}</p>`;
+});
+}
+
+document.getElementById("handbookContent").innerHTML = content;
+document.getElementById("handbook").style.display = "block";
+}
+
+// ❌ CLOSE HANDBOOK (FIXED)
+function closeHandbook(){
+document.getElementById("handbook").style.display = "none";
+}
+
+// 🎤 VOICE FEATURE (FIXED)
+function startVoice(){
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if(!SpeechRecognition){
+alert("Use Chrome browser");
+return;
+}
+
+let recognition = new SpeechRecognition();
+recognition.lang = "en-US";
+recognition.interimResults = false;
+
+let originalText = document.getElementById("caseText").innerText;
+
+document.getElementById("caseText").innerText = "🎤 Listening...";
+
+recognition.start();
+
+recognition.onresult = function(e){
+
+let speech = e.results[0][0].transcript.toLowerCase();
+
+let found = plantData.find(p => 
+speech.includes(p.use) || speech.includes(p.name.toLowerCase())
+);
+
+if(found){
+
+alert("🌿 " + found.name + " is used for " + found.use);
+
+let msg = new SpeechSynthesisUtterance(
+found.name + " is used for " + found.use
+);
+speechSynthesis.speak(msg);
+
+}else{
+alert("❌ No matching plant found");
+}
+
+generateCase();
+};
+
+recognition.onerror = function(){
+alert("Voice error, try again");
+document.getElementById("caseText").innerText = originalText;
+};
+
+recognition.onend = function(){
+document.getElementById("caseText").innerText = originalText;
+};
+}
+
+// START
+generateCase();
+
+</script>
+
+</body>
+</html>

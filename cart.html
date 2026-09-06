@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopping Cart - Virtual Herbal Garden</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* CSS Reset and base styles */
+body { font-family: 'Poppins', sans-serif; background: #f4f7f6; margin: 0; color: #333; }
+header { background: #2e7d32; color: white; text-align: center; padding: 20px; position: relative; }
+.back-btn { position: absolute; left: 20px; top: 25px; color: white; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+.back-btn:hover { color: #d4edda; }
+.back-btn i { margin-right: 5px; }
+
+.container { max-width: 1200px; margin: 40px auto; padding: 0 20px; display: flex; gap: 30px; }
+@media (max-width: 860px) { .container { flex-direction: column; } }
+
+/* Cart Items Section */
+.cart-section { flex: 2; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.cart-section--empty { width: 100%; text-align: center; }
+.cart-title { border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-top: 0; color: #2e7d32; }
+
+.cart-item { display: flex; align-items: center; border-bottom: 1px solid #f0f0f0; padding: 15px 0; gap: 20px; }
+@media (max-width: 500px) { .cart-item { flex-direction: column; text-align: center; } }
+.cart-item img { width: 80px; height: 80px; object-fit: contain; background: #f9f9f9; border-radius: 10px; padding: 5px; }
+.item-details { flex: 1; }
+.item-name { font-weight: 600; font-size: 1.1rem; margin: 0 0 5px 0; }
+.item-price { color: #27ae60; font-weight: 500; margin: 0; }
+.item-actions { display: flex; align-items: center; gap: 15px; }
+.item-total { font-weight: 600; min-width: 60px; text-align: right; }
+.qty-controls { display: flex; align-items: center; gap: 10px; background: #f9f9f9; padding: 5px 10px; border-radius: 20px; }
+.qty-btn { background: none; border: none; cursor: pointer; color: #555; font-size: 1rem; }
+.qty-display { font-weight: 600; width: 20px; text-align: center; }
+.remove-btn { color: #e74c3c; background: none; border: none; cursor: pointer; font-size: 1.2rem; transition: 0.2s; }
+.remove-btn:hover { color: #c0392b; transform: scale(1.1); }
+
+/* Checkout Section */
+.checkout-section { flex: 1; }
+.summary-card { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+.summary-title { margin-top: 0; color: #2e7d32; }
+.summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #555; }
+.summary-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 2px solid #f0f0f0; font-weight: 700; font-size: 1.2rem; color: #2e7d32; }
+
+/* User Form */
+.user-form-card { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.user-form-card h3 { margin-top: 0; color: #2e7d32; margin-bottom: 20px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; color: #555; }
+.form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: border-color 0.3s; }
+.form-group input:focus, .form-group textarea:focus { outline: none; border-color: #27ae60; }
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+.checkout-btn { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3); }
+.checkout-btn:hover { background: #219150; transform: translateY(-2px); }
+.checkout-btn:disabled { background: #95a5a6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.empty-cart { text-align: center; padding: 40px 20px; color: #7f8c8d; }
+.empty-cart i { font-size: 4rem; color: #bdc3c7; margin-bottom: 20px; }
+.continue-btn { display: inline-block; margin-top: 20px; padding: 10px 25px; background: #2e7d32; color: white; text-decoration: none; border-radius: 25px; font-weight: 500; transition: background 0.3s; }
+.continue-btn:hover { background: #215e24; }
+
+/* Modal */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(5px); justify-content: center; align-items: center; }
+.modal-content { background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.success-icon { font-size: 4rem; color: #27ae60; margin-bottom: 20px; }
+.modal-content h2 { margin-top: 0; color: #2e7d32; }
+.modal-content p { color: #555; margin-bottom: 30px; }
+.close-modal-btn { display: inline-block; padding: 12px 30px; background: #27ae60; color: white; text-decoration: none; font-weight: 600; border-radius: 25px; transition: 0.3s; }
+.close-modal-btn:hover { background: #219150; }
+</style>
+</head>
+<body>
+
+<header>
+    <a href="start.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Shop</a>
+    <h1>🛒 Your Cart</h1>
+</header>
+
+<div class="container" id="mainContainer">
+    <!-- Cart Items will be injected here -->
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h2>Order Confirmed!</h2>
+        <p>Thank you for ordering from Virtual Herbal Garden. Your plants will be delivered soon.</p>
+        <a href="start.html" class="close-modal-btn">Continue Shopping</a>
+    </div>
+</div>
+
+<script>
+    // LocalStorage key
+    const CART_KEY = 'herbalCart';
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+    function renderCart() {
+        const container = document.getElementById('mainContainer');
+        
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div class="cart-section cart-section--empty">
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-basket"></i>
+                        <h2>Your cart is empty</h2>
+                        <p>Looks like you haven't added any medicinal plants yet.</p>
+                        <a href="start.html" class="continue-btn">Explore Garden</a>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        let cartHTML = `
+            <div class="cart-section">
+                <h2 class="cart-title">Cart Items (<span id="itemCount">${cart.length}</span>)</h2>
+                <div id="cartItemsList">
+        `;
+
+        let subtotal = 0;
+
+        cart.forEach((item, index) => {
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+            
+            cartHTML += `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/80?text=Plant'">
+                    <div class="item-details">
+                        <h3 class="item-name">${item.name}</h3>
+                        <p class="item-price">₹${item.price}</p>
+                    </div>
+                    <div class="item-actions">
+                        <div class="qty-controls">
+                            <button type="button" class="qty-btn" onclick="updateQty(${index}, -1)"><i class="fas fa-minus"></i></button>
+                            <span class="qty-display">${item.quantity}</span>
+                            <button type="button" class="qty-btn" onclick="updateQty(${index}, 1)"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <p class="item-total">₹${itemTotal}</p>
+                        <button type="button" class="remove-btn" onclick="removeItem(${index})" title="Remove item"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            `;
+        });
+
+        cartHTML += `
+                </div>
+            </div>
+            
+            <div class="checkout-section">
+                <div class="summary-card">
+                    <h3 class="summary-title">Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>₹${subtotal}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span>₹50</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>₹${subtotal + 50}</span>
+                    </div>
+                </div>
+
+                <div class="user-form-card">
+                    <h3>Delivery Details</h3>
+                    <form id="checkoutForm">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" required placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" required placeholder="Enter your phone number">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Delivery Address</label>
+                            <textarea id="address" required placeholder="Enter your complete address"></textarea>
+                        </div>
+                        <button type="submit" class="checkout-btn" id="placeOrderBtn">
+                            <i class="fas fa-lock"></i> Place Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = cartHTML;
+
+        // Add event listener to form if it exists
+        const form = document.getElementById('checkoutForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                processOrder();
+            });
+        }
+    }
+
+    function updateQty(index, change) {
+        if (cart[index].quantity + change > 0) {
+            cart[index].quantity += change;
+            saveAndRender();
+        } else {
+            removeItem(index);
+        }
+    }
+
+    function removeItem(index) {
+        if (confirm('Are you sure you want to remove this plant?')) {
+            cart.splice(index, 1);
+            saveAndRender();
+        }
+    }
+
+    function saveAndRender() {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        renderCart();
+    }
+
+    function processOrder() {
+        const btn = document.getElementById('placeOrderBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        btn.disabled = true;
+
+        // Simulate API call delay
+        setTimeout(() => {
+            // Clear cart
+            cart = [];
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            
+            // Show success modal
+            document.getElementById('successModal').style.display = 'flex';
+        }, 1500);
+    }
+
+    // Initial render
+    renderCart();
+
+</script>
+</body>
+</html>
