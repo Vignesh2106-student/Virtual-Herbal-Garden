@@ -1,588 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>MEDICINAL PLANTS GUIDE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Herbal Garden</title>
+    <style>
+:root {
+    --primary: #4ade80;
+    --primary-glow: rgba(74, 222, 128, 0.5);
+    --bg-overlay: rgba(10, 25, 15, 0.75);
+}
 
-<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-body {
-    font-family: 'Poppins', sans-serif;
+* {
     margin: 0;
-    background: #f4f7f6;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
 }
 
-/* Header */
-header {
-    background: #2e7d32;
-    color: white;
-    text-align: center;
-    padding: 20px;
-}
-
-.header-actions {
+body {
+    height: 100vh;
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-top: 15px;
-}
-
-/* Section */
-section {
-    padding: 20px;
-}
-
-h2 {
-    color: #2e7d32;
-}
-
-/* Cards */
-.container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-}
-
-.card {
-    background: white;
-    border-radius: 15px;
+    align-items: center;
+    background: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=2074&auto=format&fit=crop') no-repeat center center/cover;
+    position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: 0.3s;
-    text-align: center;
-    cursor: pointer;
-    position: relative;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-
-.card img {
-    width: 100%;
-    height: 180px;
-    object-fit: contain;
-    background: #f0f0f0;
-    padding: 10px;
-}
-
-.card h3 {
-    margin: 10px 10px 5px;
-}
-
-.card p {
-    margin: 5px 10px 10px;
-    color: #555;
-    font-size: 0.9rem;
-}
-
-.price {
-    font-weight: 600;
-    color: #27ae60 !important;
-    font-size: 1.1rem !important;
-    margin-bottom: 15px !important;
-}
-
-/* Footer */
-footer {
-    background: #2e7d32;
-    color: white;
-    text-align: center;
-    padding: 10px;
-}
-
-/* Buttons */
-.btn {
-    display: inline-block;
-    padding: 10px 25px;
-    background: #fff;
-    color: #2e7d32;
-    text-decoration: none;
-    font-weight: 600;
-    border-radius: 25px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-
-.cart-btn {
-    background: #f39c12;
-    color: white;
-    position: relative;
-}
-
-.cart-btn:hover {
-    background: #e67e22;
-    color: white;
-}
-
-.cart-badge {
+/* Dark overlay for better contrast */
+body::before {
+    content: '';
     position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #e74c3c;
-    color: white;
-    border-radius: 50%;
-    min-width: 20px;
-    height: 20px;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(4px);
+    z-index: 1;
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    padding: 4rem 6rem;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.subtitle {
+    color: var(--primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 0.5s;
+}
+
+h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    margin-bottom: 2.5rem;
+    min-height: 96px; /* Prevents layout shift during typing */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* 3D Modal Styles */
-.modal {
-    display: none;
-    position: fixed; 
-    z-index: 1000; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    background-color: rgba(0,0,0,0.6);
-    backdrop-filter: blur(8px);
-    justify-content: center;
-    align-items: center;
-    animation: fadeIn 0.3s;
+.highlight {
+    color: var(--primary);
+    text-shadow: 0 0 25px var(--primary-glow);
+}
+
+.cursor {
+    display: inline-block;
+    width: 4px;
+    height: 4rem;
+    background-color: var(--primary);
+    margin-left: 10px;
+    box-shadow: 0 0 15px var(--primary-glow);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
     to { opacity: 1; }
 }
 
-.modal-content {
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 20px;
-    width: 90%;
-    max-width: 500px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    color: #888;
-    font-size: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.close-btn:hover {
-    color: #e74c3c;
-}
-
-model-viewer {
-    width: 100%;
-    height: 300px;
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    margin-top: 20px;
-}
-
-.modal-hint {
-    font-size: 0.8rem;
-    color: #7f8c8d;
-    margin-top: 10px;
-}
-
-.modal-price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #27ae60;
-    margin: 15px 0;
-}
-
-.add-to-cart-btn {
-    background: #27ae60;
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    font-size: 1.1rem;
+.btn-enter {
+    display: inline-block;
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
     font-weight: 600;
-    border-radius: 25px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
     cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.add-to-cart-btn:hover {
-    background: #219150;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-
-.toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #27ae60;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transform: translateY(100px);
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     opacity: 0;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 2000;
-    font-weight: 500;
+    transform: translateY(15px);
+    pointer-events: none;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
-.toast.show {
-    transform: translateY(0);
+.btn-enter.visible {
     opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
-</style>
-</head>
 
+.btn-enter:hover {
+    background: var(--primary);
+    color: #052e16;
+    border-color: var(--primary);
+    box-shadow: 0 0 30px var(--primary-glow);
+    transform: translateY(-3px);
+}
+
+/* Micro-interactions */
+.btn-enter::after {
+    content: '→';
+    margin-left: 10px;
+    transition: margin-left 0.3s ease;
+}
+
+.btn-enter:hover::after {
+    margin-left: 16px;
+}
+
+/* Ambient glowing orbs */
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: 0;
+    opacity: 0.5;
+    animation: float 12s infinite alternate ease-in-out;
+}
+
+.orb-1 {
+    width: 400px;
+    height: 400px;
+    background: #4ade80;
+    top: -100px;
+    left: -100px;
+}
+
+.orb-2 {
+    width: 500px;
+    height: 500px;
+    background: #0ea5e9;
+    bottom: -200px;
+    right: -100px;
+    animation-delay: -6s;
+    animation-duration: 15s;
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 2.5rem; min-height: 60px; }
+    .cursor { height: 2.5rem; }
+    .container { padding: 3rem 2rem; width: 90%; }
+}
+    </style>
+</head>
 <body>
 
-<header>
-    <h1>🌿 Medicinal Plants Guide</h1>
-    <p>Explore Ayurveda, Unani, Siddha, Naturopathy & Homeopathy</p>
-    <div class="header-actions">
-        <a href="finalvoice.html" class="btn">Take a Quiz 🎯</a>
-        <a href="cart.html" class="btn cart-btn">
-            <i class="fas fa-shopping-cart"></i> View Cart
-            <span class="cart-badge" id="cart-badge">0</span>
-        </a>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+        <div class="subtitle">Experience Nature</div>
+        <h1 id="text-container">
+            <span id="text"></span><span class="cursor"></span>
+        </h1>
+        <a href="start.html" class="btn-enter" id="enter-btn">Explore Garden</a>
     </div>
-</header>
 
-<!-- Ayurveda -->
-<section>
-<h2>🌱 Ayurvedic Plants</h2>
-<div class="container">
+    <script>
+        const message = "Virtual Herbal Garden";
+        const textElement = document.getElementById("text");
+        const enterBtn = document.getElementById("enter-btn");
+        let i = 0;
 
-<div class="card" data-price="100">
-<img src="pictures/tulsi.jpg" alt="Tulsi">
-<h3>Tulsi</h3>
-<p>Boosts immunity, treats cold</p>
-<p class="price">₹100</p>
-</div>
-
-<div class="card" data-price="250">
-<img src="pictures/ashwagandha.webp" alt="Ashwagandha">
-<h3>Ashwagandha</h3>
-<p>Reduces stress, increases strength</p>
-<p class="price">₹250</p>
-</div>
-
-<div class="card" data-price="150">
-<img src="pictures/neem.jpeg" alt="Neem">
-<h3>Neem</h3>
-<p>Good for skin & blood purification</p>
-<p class="price">₹150</p>
-</div>
-
-<div class="card" data-price="120">
-<img src="pictures/amla.jpeg" alt="Amla">
-<h3>Amla</h3>
-<p>Rich in Vitamin C, improves digestion</p>
-<p class="price">₹120</p>
-</div>
-
-<div class="card" data-price="130">
-<img src="pictures/aleovera.jpeg" alt="Aloe Vera">
-<h3>Aloe Vera</h3>
-<p>Good for skin & digestion</p>
-<p class="price">₹130</p>
-</div>
-
-</div>
-</section>
-
-<!-- Unani -->
-<section>
-<h2>🌿 Unani Plants</h2>
-<div class="container">
-
-<div class="card" data-price="90">
-<img src="pictures/sema.jpg" alt="Senna">
-<h3>Senna</h3>
-<p>Used as laxative</p>
-<p class="price">₹90</p>
-</div>
-
-<div class="card" data-price="200">
-<img src="pictures/asrol.jpg" alt="Asrol">
-<h3>Asrol</h3>
-<p>Helps control blood pressure</p>
-<p class="price">₹200</p>
-</div>
-
-<div class="card" data-price="180">
-<img src="pictures/banafsha.jpg" alt="Banafsha">
-<h3>Banafsha</h3>
-<p>Used for cough & cold</p>
-<p class="price">₹180</p>
-</div>
-
-<div class="card" data-price="110">
-<img src="pictures/gulab.webp" alt="Gulab">
-<h3>Gulab</h3>
-<p>Cooling effect, skin care</p>
-<p class="price">₹110</p>
-</div>
-
-<div class="card" data-price="80">
-<img src="pictures/ginger.webp" alt="Zanjabeel">
-<h3>Zanjabeel</h3>
-<p>Improves digestion</p>
-<p class="price">₹80</p>
-</div>
-
-</div>
-</section>
-
-<!-- Siddha -->
-<section>
-<h2>🌱 Siddha Plants</h2>
-<div class="container">
-
-<div class="card" data-price="140">
-<img src="pictures/solanum.jpg" alt="Thoothuvalai">
-<h3>Thoothuvalai</h3>
-<p>Helps respiratory issues</p>
-<p class="price">₹140</p>
-</div>
-
-<div class="card" data-price="160">
-<img src="pictures/nilavembu.webp" alt="Nilavembu">
-<h3>Nilavembu</h3>
-<p>Used for fever</p>
-<p class="price">₹160</p>
-</div>
-
-<div class="card" data-price="150">
-<img src="pictures/adathoda.jpg" alt="Adathoda">
-<h3>Adathoda</h3>
-<p>Effective for cough</p>
-<p class="price">₹150</p>
-</div>
-
-<div class="card" data-price="170">
-<img src="pictures/karisalankanni.jpg" alt="Karisalankanni">
-<h3>Karisalankanni</h3>
-<p>Supports liver health</p>
-<p class="price">₹170</p>
-</div>
-
-</div>
-</section>
-
-<!-- Naturopathy -->
-<section>
-<h2>🥗 Naturopathy Plants</h2>
-<div class="container">
-
-<div class="card" data-price="40">
-<img src="pictures/spinash.jpg" alt="Spinach">
-<h3>Spinach</h3>
-<p>Rich in iron</p>
-<p class="price">₹40</p>
-</div>
-
-<div class="card" data-price="50">
-<img src="pictures/carrot.jpg" alt="Carrot">
-<h3>Carrot</h3>
-<p>Improves eyesight</p>
-<p class="price">₹50</p>
-</div>
-
-<div class="card" data-price="60">
-<img src="pictures/turmeric1.avif" alt="Turmeric">
-<h3>Turmeric</h3>
-<p>Anti-inflammatory</p>
-<p class="price">₹60</p>
-</div>
-
-<div class="card" data-price="30">
-<img src="pictures/cucumber.jpg" alt="Cucumber">
-<h3>Cucumber</h3>
-<p>Keeps body hydrated</p>
-<p class="price">₹30</p>
-</div>
-
-</div>
-</section>
-
-<!-- Homeopathy -->
-<section>
-<h2>💊 Homeopathy Plants</h2>
-<div class="container">
-
-<div class="card" data-price="220">
-<img src="pictures/arnica.jpg" alt="Arnica">
-<h3>Arnica</h3>
-<p>Used for injury & pain</p>
-<p class="price">₹220</p>
-</div>
-
-<div class="card" data-price="240">
-<img src="pictures/belladonna.jpg" alt="Belladonna">
-<h3>Belladonna</h3>
-<p>Used for fever</p>
-<p class="price">₹240</p>
-</div>
-
-<div class="card" data-price="210">
-<img src="pictures/nux vomica.webp" alt="Nux Vomica">
-<h3>Nux Vomica</h3>
-<p>Improves digestion</p>
-<p class="price">₹210</p>
-</div>
-
-<div class="card" data-price="190">
-<img src="pictures/calendula.jpg" alt="Calendula">
-<h3>Calendula</h3>
-<p>Helps wound healing</p>
-<p class="price">₹190</p>
-</div>
-
-</div>
-</section>
-
-<footer>
-    <p>🌿 Herbal Knowledge Website | Made by Vignesh</p>
-</footer>
-
-<!-- 3D Model Modal -->
-<div id="modelModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2 id="modalTitle">Plant 3D View</h2>
-        <!-- Using a placeholder astronaut model since specific plant .glb files are missing -->
-        <model-viewer id="plantViewer" src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" alt="A 3D model" auto-rotate camera-controls shadow-intensity="1"></model-viewer>
-        <p class="modal-hint">Drag to rotate • Scroll to zoom</p>
-        <div class="modal-price" id="modalPrice">₹0</div>
-        <button class="add-to-cart-btn" id="modalAddToCart">
-            <i class="fas fa-cart-plus"></i> Add to Cart
-        </button>
-    </div>
-</div>
-
-<div id="toast" class="toast">Added to cart!</div>
-
-<script>
-    const modal = document.getElementById("modelModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const plantViewer = document.getElementById("plantViewer");
-    const modalPrice = document.getElementById("modalPrice");
-    const modalAddToCart = document.getElementById("modalAddToCart");
-    const cartBadge = document.getElementById("cart-badge");
-    const toast = document.getElementById("toast");
-
-    let currentPlant = null;
-
-    // Load Cart from LocalStorage
-    let cart = JSON.parse(localStorage.getItem('herbalCart')) || [];
-
-    function updateCartBadge() {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartBadge.innerText = totalItems;
-    }
-    
-    // Initial badge update
-    updateCartBadge();
-
-    const plantModels = {
-        "Aloe Vera": "pictures/Aloe%20Vera%20Plant.glb",
-        "Tulsi": "pictures/tulsi.glb",
-        "Ashwagandha": "pictures/ashwagandha/source/Ahwagandha.glb",
-        "Carrot": "pictures/carrot.glb",
-        "Zanjabeel": "pictures/ginger.glb",
-        "Gulab": "pictures/gulab.glb",
-        "Neem": "pictures/neem.glb",
-        "Turmeric": "pictures/Turmeric1.glb",
-        "Amla": "pictures/amla-plant-containing-fruits/source/model.glb"
-    };
-
-    document.querySelectorAll(".card").forEach(card => {
-        card.addEventListener("click", () => {
-            const plantName = card.querySelector("h3").innerText;
-            const plantPrice = parseInt(card.getAttribute("data-price"));
-            const plantImg = card.querySelector("img").src;
-            
-            modalTitle.innerText = plantName + " 3D View";
-            modalPrice.innerText = "₹" + plantPrice;
-            
-            // Set current plant info for adding to cart
-            currentPlant = {
-                name: plantName,
-                price: plantPrice,
-                image: plantImg
-            };
-            
-            // Use specific 3D model if available, otherwise fallback to placeholder
-            if (plantModels[plantName]) {
-                plantViewer.src = plantModels[plantName];
+        function typeEffect() {
+            if (i < message.length) {
+                let currentText = message.substring(0, i + 1);
+                
+                // Highlight specific words dynamically
+                if (currentText.includes("Herbal Garden")) {
+                    currentText = currentText.replace("Herbal Garden", "<span class='highlight'>Herbal Garden</span>");
+                } else if (currentText.includes("Herbal")) {
+                    currentText = currentText.replace("Herbal", "<span class='highlight'>Herbal</span>");
+                }
+                
+                textElement.innerHTML = currentText;
+                i++;
+                
+                // Randomized typing speed for realism (faster typing)
+                const typingSpeed = Math.random() * 40 + 60; 
+                setTimeout(typeEffect, typingSpeed);
             } else {
-                plantViewer.src = "https://modelviewer.dev/shared-assets/models/Astronaut.glb";
+                // Ensure final formatting is solid
+                textElement.innerHTML = "Virtual <span class='highlight'>Herbal Garden</span>";
+                
+                // Show the button shortly after typing finishes
+                setTimeout(() => {
+                    enterBtn.classList.add("visible");
+                }, 400);
             }
-            
-            modal.style.display = "flex";
-        });
-    });
-
-    modalAddToCart.addEventListener("click", () => {
-        if (!currentPlant) return;
-        
-        // Check if item already exists in cart
-        const existingItem = cart.find(item => item.name === currentPlant.name);
-        
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({ ...currentPlant, quantity: 1 });
         }
-        
-        // Save back to localStorage
-        localStorage.setItem('herbalCart', JSON.stringify(cart));
-        
-        updateCartBadge();
-        closeModal();
-        showToast();
-    });
 
-    function showToast() {
-        toast.classList.add("show");
-        setTimeout(() => {
-            toast.classList.remove("show");
-        }, 3000);
-    }
-
-    function closeModal() {
-        modal.style.display = "none";
-    }
-
-    // Close when clicking outside the modal content
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            closeModal();
-        }
-    }
-</script>
+        // Start typing effect after initial container fade-in
+        setTimeout(typeEffect, 1200);
+    </script>
 
 </body>
 </html>
